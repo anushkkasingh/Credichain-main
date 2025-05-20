@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLedger - Students</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f8fafc;
+            --accent-color: #e11d48;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --background-dark: #0f172a;
+            --background-light: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.15) 0%, transparent 50%);
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            transition: var(--transition-base);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+            border: none;
+            border-radius: 16px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+
+        .students-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .student-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: var(--transition-base);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: var(--transition-base);
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .student-card:hover::before {
+            opacity: 1;
+        }
+
+        .student-info {
+            position: relative;
+        }
+
+        .student-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .student-info p {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .student-info i {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .student-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+            color: #22c55e;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            transition: var(--transition-base);
+            z-index: 2;
+        }
+
+        .student-badge i {
+            font-size: 0.9rem;
+            color: #22c55e;
+            filter: drop-shadow(0 0 2px rgba(34, 197, 94, 0.5));
+        }
+
+        .student-card:hover .student-badge {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.15) 100%);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .student-dashboard {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            background: var(--background-dark);
+            padding: 2rem;
+            transition: var(--transition-base);
+            z-index: 1000;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .student-dashboard.active {
+            right: 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .dashboard-title-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.75rem;
+            border-radius: 12px;
+            transition: var(--transition-base);
+        }
+
+        .close-button:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            transform: rotate(90deg);
+        }
+
+        .student-profile {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .profile-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .profile-value {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .cgpa-section {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .cgpa-section h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .cgpa-value {
+            font-size: 4rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .cgpa-label {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            margin-top: 2rem;
+            height: 300px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+        }
+
+        .grade-distribution {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .grade-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .grade-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+
+        .grade-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .grade-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .subjects-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .subjects-table th {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subjects-table td {
+            padding: 1.25rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .subjects-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .subjects-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .grade {
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grade-A { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .grade-B { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .grade-C { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .grade-D { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+        .grade-F { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .grade-N { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-active { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status-completed { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+        .status-upcoming { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        .loading p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .error-message i {
+            font-size: 1.5rem;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .blockchain-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+            color: #22c55e;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-base);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+        }
+
+        .blockchain-badge:hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.15) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .blockchain-badge i {
+            font-size: 1rem;
+            color: #22c55e;
+            filter: drop-shadow(0 0 2px rgba(34, 197, 94, 0.5));
+        }
+
+        .blockchain-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            text-align: left;
+            border-radius: 16px;
+            padding: 1.25rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: var(--transition-base);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .blockchain-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 1.5rem auto;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-brand h1 {
+                font-size: 1.5rem;
+            }
+
+            .students-list {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .student-card {
+                padding: 1.5rem;
+            }
+
+            .student-dashboard {
+                padding: 1.5rem;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .cgpa-value {
+                font-size: 3rem;
+            }
+
+            .subjects-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+            margin-left: 1.5rem;
+            vertical-align: middle;
+            transition: var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            letter-spacing: 0.5px;
+            font-size: 0.95rem;
+        }
+
+        .verification-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .verification-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.2);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.15) 100%);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .verification-badge:hover::before {
+            opacity: 1;
+        }
+
+        .verification-badge i {
+            font-size: 1.25rem;
+            color: #22c55e;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.5));
+            animation: pulse 2s infinite;
+        }
+
+        .verification-badge span {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .dashboard-verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(242, 242, 242, 0.5), 0 0 0 2px rgba(59, 130, 246, 0.3);
+            margin-left: 1.5rem;
+            vertical-align: middle;
+            transition: var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+            font-size: 1.1rem;
+            animation: fadeIn 0.5s ease-out;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-verification-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .dashboard-verification-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.6), 0 0 20px rgba(59, 130, 246, 0.5), 0 0 0 2px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .dashboard-verification-badge:hover::before {
+            opacity: 1;
+        }
+
+        .dashboard-verification-badge i {
+            font-size: 1.5rem;
+            color: #ffffff;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+            animation: pulse 2s infinite;
+        }
+
+        .dashboard-verification-badge span {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        .dashboard-verification-badge .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            text-align: left;
+            border-radius: 16px;
+            padding: 1.25rem;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: var(--transition-base);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .dashboard-verification-badge:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .verification-banner {
+            position: absolute;
+            top: -1.5rem;
+            right: 0;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0 0 16px 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+            z-index: 10;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .verification-banner i {
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-university"></i>
+            <h1>EduLedger Students</h1>
+        </div>
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Home
+        </a>
+    </nav>
+
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search students by name, ID, or branch...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Loading...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Error loading data. Please try again later.</p>
+        </div>
+
+        <div class="students-list" id="studentsList">
+            <!-- Student cards will be added here dynamically -->
+        </div>
+
+        <div class="student-dashboard" id="studentDashboard">
+            <div class="dashboard-header">
+                <h2 id="dashboardTitle">Student Dashboard</h2>
+                <button class="close-button" onclick="closeDashboard()">
+                    <i class="fas fa-times"> </i>
+                </button>
+            </div>
+
+            <div class="student-profile">
+                <div class="profile-item">
+                    <span class="profile-label">Name</span>
+                    <span class="profile-value" id="studentName"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Student ID</span>
+                    <span class="profile-value" id="studentId"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Email</span>
+                    <span class="profile-value" id="studentEmail"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Branch</span>
+                    <span class="profile-value" id="studentBranch"></span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Year</span>
+                    <span class="profile-value" id="studentYear"></span>
+                </div>
+            </div>
+
+            <div class="cgpa-section">
+                <h3>Academic Performance</h3>
+                <div class="cgpa-value" id="cgpaValue">0.00</div>
+                <div class="cgpa-label">Cumulative Grade Point Average (CGPA)</div>
+                
+                <div class="chart-container">
+                    <canvas id="gradesChart"></canvas>
+                </div>
+
+                <div class="grade-distribution" id="gradeDistribution">
+                    <!-- Grade distribution cards will be added here -->
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Enrolled Subjects</h3>
+            <table class="subjects-table">
+                <thead>
+                    <tr>
+                        <th>Subject Details</th>
+                        <th>Faculty Details</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectsTableBody">
+                    <!-- Subject data will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        let gradeChart = null; // Add this at the top with other variable declarations
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('studentsList').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('studentsList').style.display = 'grid';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorMessage').querySelector('p').textContent = message;
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.student-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Load students when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudents();
+        });
+
+        async function loadStudents() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_students`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const students = await response.json();
+                
+                const studentsList = document.getElementById('studentsList');
+                studentsList.innerHTML = '';
+                
+                if (students.length === 0) {
+                    studentsList.innerHTML = '<p class="no-data">No students found</p>';
+                } else {
+                students.forEach(student => {
+                    const card = document.createElement('div');
+                    card.className = 'student-card';
+                    card.onclick = () => openStudentDashboard(student);
+                    card.innerHTML = `
+                        <div class="student-info">
+                            <h3>${student.name}</h3>
+                                <p><i class="fas fa-id-card"></i> ${student.unique_id}</p>
+                                <p><i class="fas fa-graduation-cap"></i> ${student.branch}</p>
+                                <p><i class="fas fa-calendar-alt"></i> Year ${student.year}</p>
+                        </div>
+                    `;
+                    studentsList.appendChild(card);
+                });
+                }
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showError('Error loading students. Please try again later.');
+            }
+        }
+
+        async function openStudentDashboard(student) {
+            showLoading();
+            try {
+                console.log('Opening dashboard for student:', student);
+                
+                const dashboardTitle = document.getElementById('dashboardTitle');
+                dashboardTitle.innerHTML = `
+                    <div class="dashboard-title-container">
+                        <span>${student.name}'s Dashboard</span>
+                        <div class="dashboard-verification-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Blockchain Verified</span>
+                            <div class="tooltip-text">
+                                All grades are securely stored on the blockchain<br>
+                                Each grade is timestamped and cannot be altered<br>
+                                Verification ensures academic integrity
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add verification banner
+                const dashboardHeader = document.querySelector('.dashboard-header');
+                const existingBanner = document.querySelector('.verification-banner');
+                if (!existingBanner) {
+                    const verificationBanner = document.createElement('div');
+                    verificationBanner.className = 'verification-banner';
+                    verificationBanner.innerHTML = `
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Student Record Verified on Blockchain</span>
+                    `;
+                    dashboardHeader.appendChild(verificationBanner);
+                }
+
+                document.getElementById('studentName').textContent = student.name;
+                document.getElementById('studentId').textContent = student.unique_id;
+                document.getElementById('studentEmail').textContent = student.email;
+                document.getElementById('studentBranch').textContent = student.branch;
+                document.getElementById('studentYear').textContent = `Year ${student.year}`;
+
+                console.log('Fetching subjects for student ID:', student.id);
+                const response = await fetch(`${API_BASE_URL}/get_student_subjects/${student.id}`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData);
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+                
+                const subjects = await response.json();
+                console.log('Received subjects:', subjects);
+
+                // Calculate CGPA and update display
+                const { cgpa, gradeCount } = calculateCGPA(subjects);
+                document.getElementById('cgpaValue').textContent = cgpa;
+                createGradeChart(gradeCount);
+                updateGradeDistribution(gradeCount);
+
+                const tbody = document.getElementById('subjectsTableBody');
+                tbody.innerHTML = '';
+
+                if (subjects.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No subjects found</td></tr>';
+                } else {
+                    for (const subject of subjects) {
+                    const tr = document.createElement('tr');
+                    const status = getAssignmentStatus(subject.start_date, subject.end_date);
+                        
+                        // Verify grade on blockchain if grade exists
+                        let blockchainInfo = null;
+                        if (subject.grade) {
+                            try {
+                                const verificationResponse = await fetch(
+                                    `${API_BASE_URL}/verify_grade/${student.id}/${subject.faculty_id}/${subject.grade}`
+                                );
+                                blockchainInfo = await verificationResponse.json();
+                            } catch (error) {
+                                console.error('Error verifying grade on blockchain:', error);
+                            }
+                        }
+
+                    tr.innerHTML = `
+                            <td>
+                                <div class="subject-info">
+                                    <span class="subject-name">${subject.subject_name}</span>
+                                    <span class="subject-code">${subject.subject_code}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="faculty-info">
+                                    <span class="faculty-name">${subject.faculty_name}</span>
+                                    <span class="faculty-email">${subject.faculty_email}</span>
+                                </div>
+                            </td>
+                        <td>${formatDate(subject.start_date)}</td>
+                        <td>${formatDate(subject.end_date)}</td>
+                        <td><span class="status-badge status-${status}">${status}</span></td>
+                            <td>
+                                <span class="grade grade-${subject.grade || 'N'}">${subject.grade || 'N/A'}</span>
+                                ${blockchainInfo?.verified ? `
+                                    <span class="blockchain-tooltip">
+                                        <span class="blockchain-badge">
+                                            <i class="fas fa-shield-alt"></i>
+                                            Verified
+                                        </span>
+                                        <span class="tooltip-text">
+                                            Grade verified on blockchain<br>
+                                            Block Hash: ${blockchainInfo.blockHash.substring(0, 10)}...<br>
+                                            Timestamp: ${new Date(blockchainInfo.timestamp).toLocaleString()}
+                                        </span>
+                                    </span>
+                                ` : ''}
+                            </td>
+                    `;
+                    tbody.appendChild(tr);
+                    }
+                }
+
+                // Show the dashboard
+                document.getElementById('studentDashboard').classList.add('active');
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading student dashboard:', error);
+                showError(error.message || 'Error loading student information. Please try again later.');
+            }
+        }
+
+        function closeDashboard() {
+            if (gradeChart) {
+                gradeChart.destroy();
+                gradeChart = null;
+            }
+            document.getElementById('studentDashboard').classList.remove('active');
+        }
+
+        function getAssignmentStatus(startDate, endDate) {
+            const today = new Date();
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            if (today < start) return 'upcoming';
+            if (today > end) return 'completed';
+            return 'active';
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Function to create grade distribution chart
+        function createGradeChart(gradeCount) {
+            const ctx = document.getElementById('gradesChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (gradeChart) {
+                gradeChart.destroy();
+            }
+
+            const labels = Object.keys(gradeCount);
+            const data = Object.values(gradeCount);
+            const backgroundColors = [
+                'rgba(39, 174, 96, 0.7)',  // A - Green
+                'rgba(52, 152, 219, 0.7)', // B - Blue
+                'rgba(241, 196, 15, 0.7)', // C - Yellow
+                'rgba(230, 126, 34, 0.7)', // D - Orange
+                'rgba(231, 76, 60, 0.7)'   // F - Red
+            ];
+
+            gradeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Grades',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to calculate CGPA
+        function calculateCGPA(subjects) {
+            const gradePoints = {
+                'A': 4.0,
+                'B': 3.0,
+                'C': 2.0,
+                'D': 1.0,
+                'F': 0.0
+            };
+
+            let totalPoints = 0;
+            let totalCredits = 0;
+            let gradeCount = {
+                'A': 0,
+                'B': 0,
+                'C': 0,
+                'D': 0,
+                'F': 0
+            };
+
+            subjects.forEach(subject => {
+                if (subject.grade && gradePoints[subject.grade] !== undefined) {
+                    const credits = subject.credits || 1; // Default to 1 credit if not specified
+                    totalPoints += gradePoints[subject.grade] * credits;
+                    totalCredits += credits;
+                    gradeCount[subject.grade]++;
+                }
+            });
+
+            return {
+                cgpa: totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : '0.00',
+                gradeCount
+            };
+        }
+
+        // Function to update grade distribution cards
+        function updateGradeDistribution(gradeCount) {
+            const container = document.getElementById('gradeDistribution');
+            container.innerHTML = Object.entries(gradeCount).map(([grade, count]) => `
+                <div class="grade-card">
+                    <div class="grade-count">${count}</div>
+                    <div class="grade-label">Grade ${grade}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html> 

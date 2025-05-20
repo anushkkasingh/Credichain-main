@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrediChain - Academic Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #94a3b8;
+            --accent-color: #f87171;
+            --success-color: #34d399;
+            --background-color: #0f172a;
+            --text-color: #e2e8f0;
+            --card-bg: #1e293b;
+            --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-secondary: linear-gradient(135deg, #475569 0%, #334155 100%);
+            --gradient-accent: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            --border-color: rgba(148, 163, 184, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, 
+                #0f172a 0%, 
+                #1e293b 50%, 
+                #0f172a 100%
+            );
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-color);
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(248, 113, 113, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            color: var(--text-color);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container {
+            margin-bottom: 4rem;
+            animation: float 4s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            font-size: 9rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 8px 12px rgba(99, 102, 241, 0.3));
+        }
+
+        .logo-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtext {
+            font-size: 1.25rem;
+            color: var(--text-color);
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .portal-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-card {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
+        .portal-icon {
+            font-size: 3.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 6px rgba(99, 102, 241, 0.3));
+        }
+
+        .portal-title {
+            font-size: 1.75rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .portal-description {
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .portal-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .portal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            .logo-icon {
+                font-size: 7rem;
+            }
+
+            .logo-text {
+                font-size: 2.75rem;
+            }
+
+            .portal-cards {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .portal-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-university"></i>
+            <h1>CrediChain</h1>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="logo-container">
+            <i class="fas fa-university logo-icon"></i>
+            <h1 class="logo-text">CrediChain</h1>
+            <p class="logo-subtext">Academic Management System</p>
+        </div>
+
+        <div class="portal-cards">
+            <div class="portal-card" onclick="window.location.href='admin-login.html'">
+                <i class="fas fa-user-shield portal-icon"></i>
+                <h2 class="portal-title">Admin Portal</h2>
+                <p class="portal-description">Manage students, faculty, and academic records with administrative privileges.</p>
+                <a href="admin-login.html" class="portal-button">
+                    <i class="fas fa-arrow-right"></i>
+                    Access Portal
+                </a>
+            </div>
+
+            <div class="portal-card" onclick="window.location.href='faculty.html'">
+                <i class="fas fa-chalkboard-teacher portal-icon"></i>
+                <h2 class="portal-title">Faculty Portal</h2>
+                <p class="portal-description">View assigned students, submit grades, and manage academic progress.</p>
+                <a href="faculty.html" class="portal-button">
+                    <i class="fas fa-arrow-right"></i>
+                    Access Portal
+                </a>
+            </div>
+
+            <div class="portal-card" onclick="window.location.href='student.html'">
+                <i class="fas fa-user-graduate portal-icon"></i>
+                <h2 class="portal-title">Student Portal</h2>
+                <p class="portal-description">View grades, track academic progress, and access blockchain-verified records.</p>
+                <a href="student.html" class="portal-button">
+                    <i class="fas fa-arrow-right"></i>
+                    Access Portal
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
